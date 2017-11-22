@@ -13,12 +13,12 @@
 
 'use strict';
 
-import type DraftEditor from 'DraftEditor.react';
+import type DraftEditor from './DraftEditor.react';
 
-const EditorState = require('EditorState');
+const EditorState = require('./EditorState');
 
-const containsNode = require('containsNode');
-const getActiveElement = require('getActiveElement');
+const containsNode = require('fbjs/lib/containsNode');
+const getActiveElement = require('fbjs/lib/getActiveElement');
 
 function editOnBlur(editor: DraftEditor, e: SyntheticEvent<>): void {
   // In a contentEditable element, when you select a range and then click
@@ -29,14 +29,10 @@ function editOnBlur(editor: DraftEditor, e: SyntheticEvent<>): void {
   // We therefore force the issue to be certain, checking whether the active
   // element is `body` to force it when blurring occurs within the window (as
   // opposed to clicking to another tab or window).
-  if (isWebKit && getActiveElement() === document.body) {
+  if (getActiveElement() === document.body) {
     const selection = global.getSelection();
     const editorNode = editor.editor;
-    if (
-      selection.rangeCount === 1 &&
-      containsNode(editorNode, selection.anchorNode) &&
-      containsNode(editorNode, selection.focusNode)
-    ) {
+    if (selection.rangeCount === 1 && containsNode(editorNode, selection.anchorNode) && containsNode(editorNode, selection.focusNode)) {
       selection.removeAllRanges();
     }
   }
